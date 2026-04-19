@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phan mem tinh BMI</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    :root {
+      color-scheme: light;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(circle at top, #f0f9ff 0%, #e2e8f0 40%, #cbd5e1 100%);
+      min-height: 100vh;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.45s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="text-slate-900">
+  <main class="min-h-screen flex items-center justify-center p-4">
+    <section class="w-full max-w-xl rounded-2xl bg-white/90 backdrop-blur p-6 md:p-8 shadow-xl shadow-slate-900/10">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Tinh chi so BMI</h1>
+      <p class="mt-2 text-slate-600">Nhap chieu cao va can nang de tinh nhanh BMI, kem phan loai suc khoe.</p>
+
+      <form id="bmiForm" class="mt-6 space-y-4" novalidate>
+        <div>
+          <label for="height" class="block text-sm font-medium text-slate-700">Chieu cao (cm)</label>
+          <input
+            id="height"
+            name="height"
+            type="number"
+            inputmode="decimal"
+            min="50"
+            max="300"
+            step="0.1"
+            placeholder="Vi du: 170"
+            class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="weight" class="block text-sm font-medium text-slate-700">Can nang (kg)</label>
+          <input
+            id="weight"
+            name="weight"
+            type="number"
+            inputmode="decimal"
+            min="10"
+            max="500"
+            step="0.1"
+            placeholder="Vi du: 65"
+            class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-xl bg-sky-600 text-white py-3 font-semibold tracking-wide transition hover:bg-sky-700 active:scale-[0.99]"
+        >
+          Tinh BMI
+        </button>
+      </form>
+
+      <div id="result" class="mt-6 hidden rounded-xl border border-slate-200 bg-slate-50 p-4 fade-in" aria-live="polite"></div>
+      <p id="error" class="mt-4 text-sm text-rose-600 hidden" role="alert"></p>
+
+      <div class="mt-6 text-sm text-slate-600 leading-relaxed">
+        <p>BMI duoc tinh theo cong thuc: can nang (kg) / (chieu cao (m) x chieu cao (m)).</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const bmiForm = document.getElementById("bmiForm");
+    const resultEl = document.getElementById("result");
+    const errorEl = document.getElementById("error");
+
+    function classifyBMI(bmi) {
+      if (bmi < 18.5) {
+        return { label: "Gay", color: "text-amber-600" };
+      }
+      if (bmi < 25) {
+        return { label: "Binh thuong", color: "text-emerald-600" };
+      }
+      if (bmi < 30) {
+        return { label: "Thua can", color: "text-orange-600" };
+      }
+      return { label: "Beo phi", color: "text-rose-600" };
+    }
+
+    bmiForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      errorEl.classList.add("hidden");
+      resultEl.classList.add("hidden");
+
+      const heightCm = Number(document.getElementById("height").value);
+      const weightKg = Number(document.getElementById("weight").value);
+
+      if (!heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) {
+        errorEl.textContent = "Vui long nhap dung chieu cao va can nang lon hon 0.";
+        errorEl.classList.remove("hidden");
+        return;
+      }
+
+      const heightM = heightCm / 100;
+      const bmi = weightKg / (heightM * heightM);
+      const bmiRounded = bmi.toFixed(1);
+      const category = classifyBMI(bmi);
+
+      resultEl.innerHTML = `
+        <p class="text-lg">Chi so BMI cua ban: <strong class="text-slate-900">${bmiRounded}</strong></p>
+        <p class="mt-1">Phan loai: <strong class="${category.color}">${category.label}</strong></p>
+      `;
+
+      resultEl.classList.remove("hidden");
+      resultEl.classList.remove("fade-in");
+      void resultEl.offsetWidth;
+      resultEl.classList.add("fade-in");
+    });
+  </script>
+</body>
+</html>
