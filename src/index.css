@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+.court-light {
+  background-image:
+    radial-gradient(circle at 20% 16%, rgba(255, 255, 255, 0.2), transparent 42%),
+    radial-gradient(circle at 80% 20%, rgba(125, 211, 252, 0.18), transparent 45%),
+    linear-gradient(180deg, #1b2944 0%, #212f4f 36%, #b46c20 36%, #cf8730 100%);
+  animation: arenaPulse 7s ease-in-out infinite;
+}
+
+.net-swing {
+  animation: netSwing 420ms ease-out;
+}
+
+@keyframes arenaPulse {
+  0%,
+  100% {
+    filter: saturate(1) brightness(1);
+  }
+  50% {
+    filter: saturate(1.08) brightness(1.05);
+  }
+}
+
+@keyframes netSwing {
+  0% {
+    transform: rotate(0deg) scaleY(1);
+  }
+  25% {
+    transform: rotate(-7deg) scaleY(1.04);
+  }
+  55% {
+    transform: rotate(5deg) scaleY(0.98);
+  }
+  100% {
+    transform: rotate(0deg) scaleY(1);
+  }
+}
