@@ -1,863 +1,1225 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CV – Nguyễn Trung Hiếu | Kỹ Sư Xây Dựng</title>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+  <title>Nguyễn Trung Hiếu – BIM Engineer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --navy:    #0f2240;
-      --navy2:   #1a3a6b;
-      --gold:    #c9a84c;
-      --gold2:   #e8c96e;
-      --light:   #f4f6fb;
+      --navy:    #050d1f;
+      --navy2:   #0a1628;
+      --navy3:   #0f2044;
+      --gold:    #f0c040;
+      --gold2:   #ffe07a;
+      --cyan:    #38bdf8;
+      --cyan2:   #7dd3fc;
+      --purple:  #a78bfa;
       --white:   #ffffff;
-      --gray:    #6b7280;
-      --gray2:   #e5e7eb;
-      --text:    #1e293b;
-      --accent:  #2563eb;
+      --text:    #c8d8f0;
+      --text2:   #8aacc8;
     }
 
-    html { scroll-behavior: smooth; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
 
     body {
-      font-family: 'Be Vietnam Pro', sans-serif;
-      background: #e8ecf3;
-      color: var(--text);
-      min-height: 100vh;
+      font-family:'Be Vietnam Pro',sans-serif;
+      background:var(--navy);
+      color:var(--text);
+      overflow-x:hidden;
+      cursor:none;
     }
 
-    /* ── PRINT ── */
-    @media print {
-      body { background: #fff; }
-      .no-print { display: none !important; }
-      .page { box-shadow: none !important; margin: 0 !important; border-radius: 0 !important; }
-      .sidebar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* ═══════════════════════════════════════
+       CUSTOM CURSOR
+    ═══════════════════════════════════════ */
+    .cursor {
+      position:fixed;width:12px;height:12px;
+      background:var(--cyan);border-radius:50%;
+      pointer-events:none;z-index:9999;
+      transition:transform 0.15s ease;
+      box-shadow:0 0 12px var(--cyan),0 0 24px var(--cyan);
+    }
+    .cursor-ring {
+      position:fixed;width:36px;height:36px;
+      border:1.5px solid rgba(56,189,248,0.5);
+      border-radius:50%;pointer-events:none;z-index:9998;
+      transition:all 0.18s ease;
+    }
+    .cursor.active{transform:scale(2);}
+    .cursor-ring.active{transform:scale(0.6);border-color:var(--gold);}
+
+    /* ═══════════════════════════════════════
+       CANVAS UNIVERSE
+    ═══════════════════════════════════════ */
+    #universe{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+    /* ═══════════════════════════════════════
+       SCROLLBAR
+    ═══════════════════════════════════════ */
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:var(--navy2);}
+    ::-webkit-scrollbar-thumb{background:linear-gradient(var(--cyan),var(--purple));border-radius:3px;}
+
+    /* ═══════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════ */
+    nav {
+      position:fixed;top:0;left:0;right:0;z-index:500;
+      padding:0 5%;
+      height:64px;
+      display:flex;align-items:center;justify-content:space-between;
+      background:rgba(5,13,31,0.7);
+      backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(56,189,248,0.1);
+      transition:background 0.3s;
+    }
+    .nav-logo {
+      font-family:'Orbitron',monospace;
+      font-size:1.1rem;font-weight:900;
+      background:linear-gradient(90deg,var(--cyan),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      letter-spacing:2px;
+    }
+    .nav-links{display:flex;gap:28px;list-style:none;}
+    .nav-links a {
+      font-size:0.82rem;font-weight:600;letter-spacing:1px;
+      color:var(--text2);text-decoration:none;text-transform:uppercase;
+      position:relative;transition:color 0.3s;
+    }
+    .nav-links a::after{
+      content:'';position:absolute;bottom:-4px;left:0;right:0;
+      height:1.5px;background:var(--cyan);
+      transform:scaleX(0);transition:transform 0.3s;
+    }
+    .nav-links a:hover{color:var(--cyan);}
+    .nav-links a:hover::after{transform:scaleX(1);}
+
+    /* ═══════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════ */
+    #hero {
+      position:relative;z-index:1;
+      min-height:100vh;
+      display:flex;align-items:center;justify-content:center;
+      padding:100px 5% 60px;
+      overflow:hidden;
     }
 
-    /* ── TOP BAR ── */
-    .topbar {
-      background: var(--navy);
-      padding: 12px 24px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    .hero-glow {
+      position:absolute;
+      border-radius:50%;filter:blur(80px);pointer-events:none;
     }
-    .topbar button {
-      background: var(--gold);
-      color: var(--navy);
-      border: none;
-      border-radius: 8px;
-      padding: 8px 18px;
-      font-family: 'Be Vietnam Pro', sans-serif;
-      font-weight: 700;
-      font-size: 0.82rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-    .topbar button:hover { background: var(--gold2); transform: translateY(-1px); }
+    .hero-glow-1{width:600px;height:600px;top:-10%;left:-10%;background:rgba(56,189,248,0.06);}
+    .hero-glow-2{width:400px;height:400px;bottom:0;right:-5%;background:rgba(167,139,250,0.07);}
+    .hero-glow-3{width:300px;height:300px;top:30%;left:40%;background:rgba(240,192,64,0.04);}
 
-    /* ── PAGE ── */
-    .page {
-      max-width: 960px;
-      margin: 32px auto;
-      background: var(--white);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      grid-template-rows: auto 1fr;
+    .hero-inner{
+      display:grid;grid-template-columns:1fr 1fr;
+      gap:60px;align-items:center;max-width:1100px;width:100%;
+      position:relative;z-index:2;
     }
 
-    /* ══════════════════════════════
-       HEADER (full width)
-    ══════════════════════════════ */
-    .header {
-      grid-column: 1 / -1;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #1e4080 100%);
-      padding: 40px 44px;
-      display: flex;
-      align-items: center;
-      gap: 36px;
-      position: relative;
-      overflow: hidden;
+    /* Avatar side */
+    .hero-avatar-col{display:flex;flex-direction:column;align-items:center;gap:24px;}
+
+    .avatar-universe {
+      position:relative;width:240px;height:240px;
     }
-    .header::before {
-      content: '';
-      position: absolute;
-      right: -60px; top: -60px;
-      width: 280px; height: 280px;
-      border-radius: 50%;
-      background: rgba(201,168,76,0.08);
+    .orbit-ring {
+      position:absolute;border-radius:50%;border:1px solid;
+      top:50%;left:50%;transform:translate(-50%,-50%);
+      animation:orbitSpin linear infinite;
     }
-    .header::after {
-      content: '';
-      position: absolute;
-      right: 80px; bottom: -80px;
-      width: 200px; height: 200px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.04);
+    .orbit-ring:nth-child(1){
+      width:260px;height:260px;
+      border-color:rgba(56,189,248,0.2);
+      animation-duration:12s;
+    }
+    .orbit-ring:nth-child(2){
+      width:300px;height:300px;
+      border-color:rgba(240,192,64,0.15);
+      animation-duration:20s;animation-direction:reverse;
+    }
+    .orbit-ring:nth-child(3){
+      width:340px;height:340px;
+      border-color:rgba(167,139,250,0.1);
+      animation-duration:30s;
+    }
+    @keyframes orbitSpin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+
+    .orbit-dot {
+      position:absolute;width:8px;height:8px;border-radius:50%;
+      top:0;left:50%;margin-left:-4px;margin-top:-4px;
+    }
+    .orbit-ring:nth-child(1) .orbit-dot{background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+    .orbit-ring:nth-child(2) .orbit-dot{background:var(--gold);box-shadow:0 0 8px var(--gold);}
+    .orbit-ring:nth-child(3) .orbit-dot{background:var(--purple);box-shadow:0 0 8px var(--purple);}
+
+    .avatar-frame {
+      position:absolute;top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:200px;height:200px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--navy3),#1a3070);
+      border:2px solid rgba(56,189,248,0.4);
+      box-shadow:0 0 40px rgba(56,189,248,0.2),0 0 80px rgba(56,189,248,0.08),inset 0 0 30px rgba(56,189,248,0.05);
+      display:flex;align-items:center;justify-content:center;
+      font-size:5rem;font-weight:900;
+      color:var(--cyan);
+      overflow:hidden;
+    }
+    .avatar-initials{
+      font-family:'Orbitron',monospace;
+      font-size:2.8rem;font-weight:900;
+      background:linear-gradient(135deg,var(--cyan),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
     }
 
-    .avatar-wrap {
-      flex-shrink: 0;
-      position: relative;
+    .status-pill {
+      display:flex;align-items:center;gap:8px;
+      background:rgba(56,189,248,0.08);
+      border:1px solid rgba(56,189,248,0.25);
+      border-radius:999px;padding:7px 18px;
+      font-size:0.78rem;font-weight:600;color:var(--cyan2);
+      letter-spacing:1px;
     }
-    .avatar-ring {
-      width: 130px; height: 130px;
-      border-radius: 50%;
-      border: 4px solid var(--gold);
-      padding: 4px;
-      background: var(--white);
-      box-shadow: 0 0 0 6px rgba(201,168,76,0.2);
+    .status-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--cyan);
+      box-shadow:0 0 8px var(--cyan);
+      animation:blink 1.6s ease-in-out infinite;
     }
-    .avatar-ring img {
-      width: 100%; height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3};}
+
+    /* Text side */
+    .hero-text-col{}
+    .hero-tag {
+      display:inline-block;
+      font-size:0.72rem;font-weight:700;letter-spacing:3px;
+      text-transform:uppercase;color:var(--gold);
+      border:1px solid rgba(240,192,64,0.3);
+      border-radius:999px;padding:4px 14px;margin-bottom:16px;
+      background:rgba(240,192,64,0.05);
     }
-    .avatar-placeholder {
-      width: 100%; height: 100%;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #1a3a6b);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      color: var(--white);
-      font-weight: 800;
+    .hero-name {
+      font-family:'Orbitron',monospace;
+      font-size:clamp(1.8rem,3.5vw,3rem);
+      font-weight:900;line-height:1.1;
+      color:var(--white);
+      margin-bottom:8px;
     }
-    .header-badge {
-      position: absolute;
-      bottom: 2px; right: 2px;
-      background: var(--gold);
-      border-radius: 50%;
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    .hero-name .highlight{
+      background:linear-gradient(90deg,var(--cyan),var(--gold),var(--purple));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .hero-role {
+      font-size:1rem;font-weight:600;
+      color:var(--cyan2);margin-bottom:20px;
+      letter-spacing:1px;
+    }
+    .typed-wrap::after{
+      content:'|';animation:blink 0.8s infinite;color:var(--cyan);
+    }
+    .hero-desc {
+      font-size:0.88rem;line-height:1.9;color:var(--text2);
+      margin-bottom:28px;max-width:460px;
     }
 
-    .header-info { flex: 1; position: relative; z-index: 1; }
-
-    .header-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--white);
-      line-height: 1.1;
-      letter-spacing: 1px;
+    .hero-contacts{
+      display:flex;flex-direction:column;gap:10px;margin-bottom:32px;
     }
-    .header-name span { color: var(--gold); }
-
-    .header-title {
-      margin-top: 6px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      color: var(--gold);
-      letter-spacing: 3px;
-      text-transform: uppercase;
+    .contact-row{
+      display:flex;align-items:center;gap:10px;
+      font-size:0.82rem;color:var(--text2);
+    }
+    .contact-icon{
+      width:30px;height:30px;border-radius:8px;
+      background:rgba(56,189,248,0.1);
+      border:1px solid rgba(56,189,248,0.2);
+      display:flex;align-items:center;justify-content:center;
+      font-size:0.85rem;flex-shrink:0;
     }
 
-    .header-divider {
-      width: 60px; height: 3px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-      border-radius: 2px;
-      margin: 14px 0;
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+    .btn-primary{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:12px 26px;border-radius:12px;
+      background:linear-gradient(135deg,#0ea5e9,#38bdf8);
+      color:var(--navy);font-weight:800;font-size:0.85rem;
+      text-decoration:none;border:none;cursor:none;
+      transition:all 0.3s;
+      box-shadow:0 0 24px rgba(56,189,248,0.4);
+    }
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 0 40px rgba(56,189,248,0.6);}
+    .btn-ghost{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:12px 26px;border-radius:12px;
+      border:1.5px solid rgba(56,189,248,0.35);
+      color:var(--cyan2);font-weight:700;font-size:0.85rem;
+      text-decoration:none;cursor:none;
+      background:rgba(56,189,248,0.05);
+      transition:all 0.3s;
+    }
+    .btn-ghost:hover{border-color:var(--cyan);background:rgba(56,189,248,0.1);transform:translateY(-3px);}
+
+    /* scroll indicator */
+    .scroll-hint{
+      position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      font-size:0.7rem;letter-spacing:2px;color:var(--text2);
+      animation:floatUD 2s ease-in-out infinite;z-index:2;
+    }
+    .scroll-mouse{
+      width:22px;height:34px;border-radius:11px;
+      border:1.5px solid rgba(56,189,248,0.4);
+      display:flex;justify-content:center;padding-top:6px;
+    }
+    .scroll-wheel{
+      width:3px;height:7px;background:var(--cyan);border-radius:999px;
+      animation:scrollWheel 1.6s ease-in-out infinite;
+    }
+    @keyframes scrollWheel{0%,100%{opacity:1;transform:translateY(0);}50%{opacity:0.2;transform:translateY(8px);}}
+    @keyframes floatUD{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);}}
+
+    /* ═══════════════════════════════════════
+       SECTION COMMONS
+    ═══════════════════════════════════════ */
+    section{
+      position:relative;z-index:1;
+      padding:90px 5%;
+    }
+    .section-inner{max-width:1100px;margin:0 auto;}
+
+    .sec-label{
+      display:inline-flex;align-items:center;gap:8px;
+      font-size:0.72rem;font-weight:700;letter-spacing:3px;
+      text-transform:uppercase;color:var(--cyan);
+      margin-bottom:10px;
+    }
+    .sec-label::before{
+      content:'';width:30px;height:1.5px;background:var(--cyan);
+    }
+    .sec-title{
+      font-family:'Orbitron',monospace;
+      font-size:clamp(1.5rem,3vw,2.2rem);font-weight:900;
+      color:var(--white);margin-bottom:50px;
+      position:relative;
+    }
+    .sec-title span{
+      background:linear-gradient(90deg,var(--cyan),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
     }
 
-    .header-contacts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 28px;
-    }
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 0.83rem;
-      color: rgba(255,255,255,0.85);
-    }
-    .contact-item .icon {
-      width: 22px; height: 22px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem;
-      flex-shrink: 0;
+    /* divider */
+    .glowing-divider{
+      height:1px;max-width:1100px;margin:0 auto;
+      background:linear-gradient(90deg,transparent,rgba(56,189,248,0.3),transparent);
     }
 
-    /* ══════════════════════════════
-       SIDEBAR
-    ══════════════════════════════ */
-    .sidebar {
-      background: var(--navy);
-      padding: 32px 24px;
-      color: var(--white);
+    /* ═══════════════════════════════════════
+       ABOUT / STATS
+    ═══════════════════════════════════════ */
+    .stats-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+      margin-bottom:50px;
+    }
+    .stat-card{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(56,189,248,0.12);
+      border-radius:16px;padding:24px 20px;text-align:center;
+      position:relative;overflow:hidden;
+      transition:transform 0.3s,border-color 0.3s;
+    }
+    .stat-card::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at top,rgba(56,189,248,0.06),transparent 70%);
+      opacity:0;transition:opacity 0.3s;
+    }
+    .stat-card:hover{transform:translateY(-6px);border-color:rgba(56,189,248,0.35);}
+    .stat-card:hover::before{opacity:1;}
+    .stat-num{
+      font-family:'Orbitron',monospace;
+      font-size:2rem;font-weight:900;
+      background:linear-gradient(135deg,var(--cyan),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .stat-label{font-size:0.75rem;color:var(--text2);margin-top:4px;font-weight:500;}
+
+    /* ═══════════════════════════════════════
+       EDUCATION
+    ═══════════════════════════════════════ */
+    .edu-card{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(56,189,248,0.15);
+      border-radius:20px;padding:32px 36px;
+      display:grid;grid-template-columns:auto 1fr;gap:28px;
+      align-items:start;
+      position:relative;overflow:hidden;
+      transition:transform 0.3s,box-shadow 0.3s;
+    }
+    .edu-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--cyan),var(--gold),var(--purple));
+    }
+    .edu-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(56,189,248,0.1);}
+    .edu-icon-box{
+      width:64px;height:64px;border-radius:16px;
+      background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(167,139,250,0.1));
+      border:1px solid rgba(56,189,248,0.25);
+      display:flex;align-items:center;justify-content:center;
+      font-size:2rem;
+    }
+    .edu-school{
+      font-family:'Orbitron',monospace;
+      font-size:0.95rem;font-weight:900;color:var(--white);
+      margin-bottom:4px;line-height:1.4;
+    }
+    .edu-major{font-size:0.83rem;color:var(--cyan2);margin-bottom:12px;font-weight:500;}
+    .edu-badges{display:flex;flex-wrap:wrap;gap:8px;}
+    .badge{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:700;
+    }
+    .badge-blue{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);color:var(--cyan2);}
+    .badge-gold{background:rgba(240,192,64,0.1);border:1px solid rgba(240,192,64,0.3);color:var(--gold2);}
+    .badge-purple{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--purple);}
+
+    /* ═══════════════════════════════════════
+       EXPERIENCE TIMELINE
+    ═══════════════════════════════════════ */
+    .timeline{position:relative;display:flex;flex-direction:column;gap:0;}
+    .timeline::before{
+      content:'';position:absolute;left:26px;top:0;bottom:0;width:1px;
+      background:linear-gradient(180deg,var(--cyan),var(--purple),transparent);
     }
 
-    .sb-section { margin-bottom: 30px; }
-    .sb-section:last-child { margin-bottom: 0; }
-
-    .sb-title {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .tl-item{
+      display:grid;grid-template-columns:52px 1fr;gap:24px;
+      margin-bottom:40px;
     }
-    .sb-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(201,168,76,0.25);
+    .tl-item:last-child{margin-bottom:0;}
+
+    .tl-node-col{display:flex;flex-direction:column;align-items:center;padding-top:6px;}
+    .tl-node{
+      width:52px;height:52px;border-radius:14px;flex-shrink:0;
+      background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(167,139,250,0.1));
+      border:1.5px solid rgba(56,189,248,0.35);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;
+      box-shadow:0 0 20px rgba(56,189,248,0.15);
+      position:relative;z-index:1;
     }
 
-    /* About */
-    .sb-about {
-      font-size: 0.83rem;
-      line-height: 1.75;
-      color: rgba(255,255,255,0.78);
+    .tl-body{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(56,189,248,0.1);
+      border-radius:18px;padding:24px 28px;
+      transition:transform 0.3s,border-color 0.3s;
+      position:relative;overflow:hidden;
+    }
+    .tl-body::after{
+      content:'';position:absolute;
+      top:0;left:0;bottom:0;width:2px;
+      background:linear-gradient(180deg,var(--cyan),transparent);
+      opacity:0;transition:opacity 0.3s;
+    }
+    .tl-item:hover .tl-body{transform:translateX(6px);border-color:rgba(56,189,248,0.25);}
+    .tl-item:hover .tl-body::after{opacity:1;}
+
+    .tl-top{
+      display:flex;flex-wrap:wrap;justify-content:space-between;
+      align-items:flex-start;gap:8px;margin-bottom:4px;
+    }
+    .tl-company{
+      font-size:0.92rem;font-weight:800;color:var(--white);line-height:1.4;
+      max-width:600px;
+    }
+    .tl-date-pill{
+      background:rgba(56,189,248,0.08);
+      border:1px solid rgba(56,189,248,0.2);
+      border-radius:999px;padding:4px 12px;
+      font-size:0.72rem;font-weight:700;color:var(--cyan2);
+      white-space:nowrap;flex-shrink:0;letter-spacing:0.5px;
+    }
+    .tl-role{
+      font-size:0.8rem;font-weight:700;
+      color:var(--gold);letter-spacing:0.5px;
+      margin-bottom:14px;font-style:italic;
     }
 
-    /* Skill bars */
-    .skill-item { margin-bottom: 12px; }
-    .skill-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 5px;
-      font-weight: 500;
+    .project-cards{display:flex;flex-direction:column;gap:8px;}
+    .proj-card{
+      background:rgba(255,255,255,0.025);
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:10px;padding:10px 14px;
+      font-size:0.79rem;color:var(--text2);line-height:1.7;
+      display:flex;align-items:flex-start;gap:10px;
+      transition:background 0.2s;
     }
-    .skill-track {
-      height: 6px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 999px;
-      overflow: hidden;
+    .proj-card:hover{background:rgba(56,189,248,0.05);}
+    .proj-bullet{
+      width:6px;height:6px;border-radius:50%;
+      background:var(--cyan);flex-shrink:0;margin-top:7px;
+      box-shadow:0 0 6px var(--cyan);
     }
-    .skill-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--gold), var(--gold2));
-      width: 0;
-      transition: width 1.4s cubic-bezier(.4,0,.2,1);
-    }
-
-    /* Soft skills */
-    .soft-skill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 9px;
-    }
-    .soft-skill::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--gold);
-      flex-shrink: 0;
+    .proj-card strong{color:var(--white);font-weight:700;}
+    .tech-tag{
+      display:inline-block;
+      background:rgba(167,139,250,0.15);
+      border:1px solid rgba(167,139,250,0.3);
+      border-radius:999px;padding:1px 8px;
+      font-size:0.67rem;font-weight:700;color:var(--purple);
+      margin-left:4px;vertical-align:middle;white-space:nowrap;
     }
 
-    /* Cert pills */
-    .cert-item {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(201,168,76,0.25);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      font-size: 0.79rem;
-      color: rgba(255,255,255,0.85);
-      line-height: 1.5;
-    }
-    .cert-item strong {
-      display: block;
-      color: var(--gold2);
-      margin-bottom: 2px;
-      font-size: 0.8rem;
+    /* ═══════════════════════════════════════
+       SKILLS
+    ═══════════════════════════════════════ */
+    .skills-layout{
+      display:grid;grid-template-columns:1fr 1fr;gap:24px;
     }
 
-    /* Language */
-    .lang-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
+    .skill-section-title{
+      font-size:0.72rem;font-weight:700;letter-spacing:2.5px;
+      text-transform:uppercase;color:var(--gold);
+      margin-bottom:16px;display:flex;align-items:center;gap:8px;
     }
-    .lang-label { font-size: 0.8rem; color: rgba(255,255,255,0.85); }
-    .lang-dots { display: flex; gap: 4px; }
-    .dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-    }
-    .dot.filled { background: var(--gold); }
+    .skill-section-title::after{content:'';flex:1;height:1px;background:rgba(240,192,64,0.15);}
 
-    /* ══════════════════════════════
-       MAIN
-    ══════════════════════════════ */
-    .main {
-      padding: 32px 36px;
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
+    .skill-bar-item{margin-bottom:16px;}
+    .skill-bar-top{
+      display:flex;justify-content:space-between;
+      font-size:0.82rem;color:var(--text);font-weight:600;
+      margin-bottom:7px;
     }
+    .skill-bar-pct{color:var(--cyan2);font-size:0.78rem;}
+    .skill-track{
+      height:7px;border-radius:999px;
+      background:rgba(255,255,255,0.06);overflow:hidden;
+    }
+    .skill-fill{
+      height:100%;border-radius:999px;width:0;
+      transition:width 1.6s cubic-bezier(0.4,0,0.2,1);
+      position:relative;
+    }
+    .skill-fill::after{
+      content:'';position:absolute;right:0;top:0;bottom:0;
+      width:20px;background:rgba(255,255,255,0.4);
+      filter:blur(6px);
+    }
+    .sf-cyan{background:linear-gradient(90deg,#0ea5e9,#38bdf8);}
+    .sf-gold{background:linear-gradient(90deg,#d97706,#f0c040);}
+    .sf-purple{background:linear-gradient(90deg,#7c3aed,#a78bfa);}
 
-    /* Section title */
-    .section-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
+    /* Soft skill tags */
+    .soft-grid{display:flex;flex-direction:column;gap:10px;}
+    .soft-item{
+      display:flex;align-items:center;gap:12px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.05);
+      border-radius:10px;padding:10px 14px;
+      font-size:0.82rem;color:var(--text);
+      transition:border-color 0.3s,transform 0.3s;
     }
-    .section-icon {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--navy), var(--navy2));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(15,34,64,0.3);
-    }
-    .section-title-text {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-    .section-line {
-      flex: 1;
-      height: 2px;
-      background: linear-gradient(90deg, var(--navy2), transparent);
-      border-radius: 1px;
-      opacity: 0.15;
-    }
+    .soft-item:hover{border-color:rgba(56,189,248,0.25);transform:translateX(6px);}
+    .soft-icon{font-size:1.1rem;flex-shrink:0;}
 
-    /* Timeline */
-    .timeline { position: relative; }
-    .timeline-item {
-      position: relative;
-      padding-left: 22px;
-      margin-bottom: 24px;
+    /* Tech pills cloud */
+    .tools-cloud{
+      display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;
     }
-    .timeline-item:last-child { margin-bottom: 0; }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 8px;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 0 3px rgba(201,168,76,0.2);
+    .tool-pill{
+      display:flex;align-items:center;gap:7px;
+      padding:8px 16px;border-radius:12px;
+      font-size:0.8rem;font-weight:700;
+      transition:all 0.3s;cursor:default;
     }
-    .timeline-item::after {
-      content: '';
-      position: absolute;
-      left: 4px; top: 20px;
-      width: 2px;
-      bottom: -12px;
-      background: linear-gradient(180deg, var(--gold), transparent);
-      opacity: 0.25;
+    .tp-cyan{
+      background:rgba(56,189,248,0.08);
+      border:1.5px solid rgba(56,189,248,0.25);color:var(--cyan2);
     }
-    .timeline-item:last-child::after { display: none; }
-
-    .tl-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 4px;
-      margin-bottom: 4px;
+    .tp-cyan:hover{background:rgba(56,189,248,0.18);box-shadow:0 0 20px rgba(56,189,248,0.2);}
+    .tp-gold{
+      background:rgba(240,192,64,0.08);
+      border:1.5px solid rgba(240,192,64,0.25);color:var(--gold2);
     }
-    .tl-company {
-      font-size: 0.92rem;
-      font-weight: 800;
-      color: var(--navy);
-      line-height: 1.3;
+    .tp-gold:hover{background:rgba(240,192,64,0.18);box-shadow:0 0 20px rgba(240,192,64,0.2);}
+    .tp-purple{
+      background:rgba(167,139,250,0.08);
+      border:1.5px solid rgba(167,139,250,0.25);color:var(--purple);
     }
-    .tl-date {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--white);
-      background: var(--navy2);
-      padding: 3px 10px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-    .tl-role {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--gold);
-      margin-bottom: 6px;
-      font-style: italic;
-    }
-    .tl-desc { font-size: 0.8rem; color: var(--gray); margin-bottom: 8px; line-height: 1.6; }
-
-    /* Project list */
-    .project-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-    .project-list li {
-      background: var(--light);
-      border-left: 3px solid var(--gold);
-      border-radius: 0 8px 8px 0;
-      padding: 8px 12px;
-      font-size: 0.79rem;
-      color: var(--text);
-      line-height: 1.6;
-    }
-    .project-list li strong { color: var(--navy); font-weight: 700; }
-    .project-list li .tag {
-      display: inline-block;
-      background: var(--navy);
-      color: var(--gold2);
-      font-size: 0.68rem;
-      padding: 1px 7px;
-      border-radius: 999px;
-      margin-left: 4px;
-      font-weight: 600;
+    .tp-purple:hover{background:rgba(167,139,250,0.18);box-shadow:0 0 20px rgba(167,139,250,0.2);}
+    .tp-score{
+      background:rgba(255,255,255,0.08);
+      border-radius:999px;padding:1px 8px;
+      font-size:0.68rem;color:var(--white);
     }
 
-    /* Education */
-    .edu-card {
-      background: linear-gradient(135deg, #f0f4ff, #e8ecf8);
-      border-radius: 12px;
-      padding: 16px 20px;
-      border: 1px solid rgba(37,99,235,0.12);
+    /* ═══════════════════════════════════════
+       CERTS
+    ═══════════════════════════════════════ */
+    .certs-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .cert-card{
+      background:rgba(255,255,255,0.025);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:18px;padding:24px;
+      position:relative;overflow:hidden;
+      transition:transform 0.3s,border-color 0.3s;
     }
-    .edu-school {
-      font-size: 0.92rem;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 2px;
+    .cert-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
     }
-    .edu-major {
-      font-size: 0.82rem;
-      color: var(--gray);
-      margin-bottom: 8px;
+    .cert-card.c1::before{background:linear-gradient(90deg,#0ea5e9,#38bdf8);}
+    .cert-card.c2::before{background:linear-gradient(90deg,#d97706,#f0c040);}
+    .cert-card:hover{transform:translateY(-6px);}
+    .cert-card.c1:hover{border-color:rgba(56,189,248,0.3);box-shadow:0 20px 40px rgba(56,189,248,0.1);}
+    .cert-card.c2:hover{border-color:rgba(240,192,64,0.3);box-shadow:0 20px 40px rgba(240,192,64,0.1);}
+    .cert-icon{font-size:2.5rem;margin-bottom:12px;}
+    .cert-name{
+      font-weight:800;font-size:0.92rem;color:var(--white);margin-bottom:4px;
     }
-    .edu-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .cert-org{font-size:0.78rem;color:var(--text2);}
+    .cert-score{
+      display:inline-block;margin-top:12px;
+      padding:4px 14px;border-radius:999px;
+      font-size:0.78rem;font-weight:800;
     }
-    .edu-badge {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--white);
-      border: 1px solid var(--gray2);
-      border-radius: 8px;
-      padding: 5px 12px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--navy);
+    .c1 .cert-score{background:rgba(56,189,248,0.12);color:var(--cyan2);}
+    .c2 .cert-score{background:rgba(240,192,64,0.12);color:var(--gold2);}
+
+    /* ═══════════════════════════════════════
+       CONTACT
+    ═══════════════════════════════════════ */
+    #contact{
+      background:radial-gradient(ellipse at center,rgba(56,189,248,0.04),transparent 70%);
     }
-    .gpa-badge {
-      background: var(--navy);
-      color: var(--gold);
-      border-color: var(--navy);
+    .contact-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:24px;
+      margin-bottom:40px;
+    }
+    .contact-card{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(56,189,248,0.1);
+      border-radius:18px;padding:24px 28px;
+      display:flex;align-items:center;gap:18px;
+      transition:all 0.3s;
+    }
+    .contact-card:hover{
+      border-color:rgba(56,189,248,0.3);
+      transform:translateY(-4px);
+      box-shadow:0 16px 40px rgba(56,189,248,0.08);
+    }
+    .cc-icon{
+      width:52px;height:52px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;flex-shrink:0;
+    }
+    .cc-icon.ci1{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);}
+    .cc-icon.ci2{background:rgba(240,192,64,0.1);border:1px solid rgba(240,192,64,0.2);}
+    .cc-icon.ci3{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);}
+    .cc-icon.ci4{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);}
+    .cc-label{font-size:0.72rem;color:var(--text2);margin-bottom:3px;letter-spacing:1px;text-transform:uppercase;}
+    .cc-value{font-size:0.9rem;font-weight:700;color:var(--white);}
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    footer{
+      position:relative;z-index:1;
+      text-align:center;padding:32px 20px;
+      border-top:1px solid rgba(56,189,248,0.08);
+      color:var(--text2);font-size:0.78rem;
+    }
+    .footer-logo{
+      font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;
+      background:linear-gradient(90deg,var(--cyan),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;margin-bottom:8px;
     }
 
-    /* Skill grid in main */
-    .skill-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .skill-card {
-      background: var(--light);
-      border-radius: 10px;
-      padding: 12px 14px;
-      border: 1px solid var(--gray2);
-    }
-    .skill-card-title {
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--navy2);
-      margin-bottom: 8px;
-    }
-    .skill-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--white);
-      border: 1.5px solid var(--gray2);
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin: 3px 3px 3px 0;
-    }
-    .skill-tag .dot-level {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-    }
+    /* ═══════════════════════════════════════
+       REVEAL ANIMATION
+    ═══════════════════════════════════════ */
+    .reveal{opacity:0;transform:translateY(40px);transition:all 0.7s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+    .reveal-l{opacity:0;transform:translateX(-40px);transition:all 0.7s ease;}
+    .reveal-l.visible{opacity:1;transform:translateX(0);}
+    .reveal-r{opacity:0;transform:translateX(40px);transition:all 0.7s ease;}
+    .reveal-r.visible{opacity:1;transform:translateX(0);}
 
-    /* Reference */
-    .ref-box {
-      background: linear-gradient(135deg, var(--navy), var(--navy2));
-      border-radius: 12px;
-      padding: 16px 20px;
-      color: rgba(255,255,255,0.7);
-      font-size: 0.82rem;
-      text-align: center;
-      font-style: italic;
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media(max-width:860px){
+      .hero-inner{grid-template-columns:1fr;text-align:center;gap:36px;}
+      .hero-contacts{align-items:center;}
+      .hero-btns{justify-content:center;}
+      .stats-grid{grid-template-columns:repeat(2,1fr);}
+      .skills-layout{grid-template-columns:1fr;}
+      .certs-grid{grid-template-columns:1fr;}
+      .contact-grid{grid-template-columns:1fr;}
+      .nav-links{display:none;}
+      .hero-avatar-col{order:-1;}
     }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 700px) {
-      .page {
-        grid-template-columns: 1fr;
-        margin: 0;
-        border-radius: 0;
-      }
-      .header { flex-direction: column; text-align: center; padding: 28px 20px; }
-      .header-divider { margin: 14px auto; }
-      .sidebar { padding: 24px 18px; }
-      .main { padding: 24px 18px; }
-      .header-name { font-size: 1.8rem; }
-      .skill-grid { grid-template-columns: 1fr; }
+    @media(max-width:580px){
+      .stats-grid{grid-template-columns:repeat(2,1fr);}
+      section{padding:60px 5%;}
+      .edu-card{grid-template-columns:1fr;gap:16px;}
+      .tl-item{grid-template-columns:40px 1fr;gap:16px;}
     }
   </style>
 </head>
 <body>
 
-<!-- Top Bar -->
-<div class="topbar no-print">
-  <button onclick="window.print()">🖨️ In / Xuất PDF</button>
-  <button onclick="toggleTheme()">🌙 Dark Mode</button>
-</div>
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-<!-- CV Page -->
-<div class="page" id="cvPage">
+<!-- Universe canvas -->
+<canvas id="universe"></canvas>
 
-  <!-- ══ HEADER ══ -->
-  <header class="header">
-    <div class="avatar-wrap">
-      <div class="avatar-ring">
-        <div class="avatar-placeholder">NH</div>
-      </div>
-      <div class="header-badge">🏗️</div>
-    </div>
-    <div class="header-info">
-      <div class="header-name">NGUYỄN TRUNG <span>HIẾU</span></div>
-      <div class="header-title">BIM Modeller · Kỹ Sư Xây Dựng</div>
-      <div class="header-divider"></div>
-      <div class="header-contacts">
-        <div class="contact-item">
-          <div class="icon">📅</div>
-          <span>15/06/2001</span>
-        </div>
-        <div class="contact-item">
-          <div class="icon">📧</div>
-          <span>ntrhieu.hg@gmail.com</span>
-        </div>
-        <div class="contact-item">
-          <div class="icon">📞</div>
-          <span>0787820981</span>
-        </div>
-        <div class="contact-item">
-          <div class="icon">📍</div>
-          <span>Tân Bình, Phụng Hiệp, Hậu Giang</span>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">NTH</div>
+  <ul class="nav-links">
+    <li><a href="#about">Giới thiệu</a></li>
+    <li><a href="#education">Học vấn</a></li>
+    <li><a href="#experience">Kinh nghiệm</a></li>
+    <li><a href="#skills">Kỹ năng</a></li>
+    <li><a href="#contact">Liên hệ</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section id="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+  <div class="hero-glow hero-glow-3"></div>
+
+  <div class="hero-inner">
+    <!-- Avatar -->
+    <div class="hero-avatar-col">
+      <div class="avatar-universe">
+        <div class="orbit-ring"><div class="orbit-dot"></div></div>
+        <div class="orbit-ring"><div class="orbit-dot"></div></div>
+        <div class="orbit-ring"><div class="orbit-dot"></div></div>
+        <div class="avatar-frame">
+          <div class="avatar-initials">NH</div>
         </div>
       </div>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        Sẵn sàng cơ hội mới
+      </div>
     </div>
-  </header>
 
-  <!-- ══ SIDEBAR ══ -->
-  <aside class="sidebar">
-
-    <!-- About -->
-    <div class="sb-section">
-      <div class="sb-title">Giới thiệu</div>
-      <p class="sb-about">
-        Em là kỹ sư xây dựng, đam mê làm việc với vị trí <strong style="color:var(--gold2)">BIM Modeller</strong> 2 năm, đã triển khai các loại bản vẽ từ dự án nhỏ đến dự án lớn.
-        <br/><br/>
-        Hầu hết các dự án em đã thực hiện đều sử dụng phần mềm <strong style="color:var(--gold2)">Revit</strong>. Với kinh nghiệm triển khai bản vẽ, em tin rằng bản thân em hoàn toàn có thể thích sức với vai trò hạt nhân kiến trúc.
+    <!-- Text -->
+    <div class="hero-text-col">
+      <div class="hero-tag">✦ Kỹ Sư Xây Dựng &amp; BIM Specialist</div>
+      <h1 class="hero-name">
+        NGUYỄN<br/>TRUNG <span class="highlight">HIẾU</span>
+      </h1>
+      <div class="hero-role">
+        <span class="typed-wrap" id="typed"></span>
+      </div>
+      <p class="hero-desc">
+        Kỹ sư xây dựng với 2 năm kinh nghiệm vị trí <strong style="color:var(--cyan2)">BIM Modeller</strong>, chuyên triển khai các loại bản vẽ từ dự án nhỏ đến quy mô lớn. Thành thạo phần mềm <strong style="color:var(--gold2)">Revit</strong>, tự tin đảm nhận vai trò hạt nhân trong đội ngũ kỹ thuật.
       </p>
-    </div>
-
-    <!-- Technical Skills -->
-    <div class="sb-section">
-      <div class="sb-title">Kỹ năng triển khai</div>
-      <div class="skill-item">
-        <div class="skill-label"><span>Revit</span><span>90%</span></div>
-        <div class="skill-track"><div class="skill-fill" data-width="90"></div></div>
+      <div class="hero-contacts">
+        <div class="contact-row"><div class="contact-icon">📅</div><span>15/06/2001</span></div>
+        <div class="contact-row"><div class="contact-icon">📧</div><span>ntrhieu.hg@gmail.com</span></div>
+        <div class="contact-row"><div class="contact-icon">📞</div><span>0787820981</span></div>
+        <div class="contact-row"><div class="contact-icon">📍</div><span>Tân Bình, Phụng Hiệp, Hậu Giang</span></div>
       </div>
-      <div class="skill-item">
-        <div class="skill-label"><span>AutoCAD</span><span>70%</span></div>
-        <div class="skill-track"><div class="skill-fill" data-width="70"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-label"><span>Navisworks</span><span>75%</span></div>
-        <div class="skill-track"><div class="skill-fill" data-width="75"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-label"><span>MS Project</span><span>65%</span></div>
-        <div class="skill-track"><div class="skill-fill" data-width="65"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-label"><span>Unreal Engine</span><span>60%</span></div>
-        <div class="skill-track"><div class="skill-fill" data-width="60"></div></div>
-      </div>
-
-      <div class="sb-title" style="margin-top:18px;">Kỹ năng thiết kế</div>
-      <div class="skill-item">
-        <div class="skill-label"><span>RSAP</span><span>70%</span></div>
-        <div class="skill-track"><div class="skill-fill" data-width="70"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-label"><span>Etab</span><span>70%</span></div>
-        <div class="skill-track"><div class="skill-fill" data-width="70"></div></div>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary">🚀 Liên hệ ngay</a>
+        <a href="#experience" class="btn-ghost">📋 Xem kinh nghiệm</a>
       </div>
     </div>
+  </div>
 
-    <!-- Soft Skills -->
-    <div class="sb-section">
-      <div class="sb-title">Kỹ năng mềm</div>
-      <div class="soft-skill">Chịu trách nhiệm và nỗ lực trong công việc</div>
-      <div class="soft-skill">Khả năng học hỏi và tiếp thu nhanh kiến thức mới</div>
-      <div class="soft-skill">Có khả năng làm việc nhóm và làm việc độc lập</div>
-      <div class="soft-skill">Có khả năng đảm nhiệm vai trò trưởng nhóm trong nhóm</div>
-    </div>
+  <div class="scroll-hint">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+    <span>SCROLL</span>
+  </div>
+</section>
 
-    <!-- Certificates -->
-    <div class="sb-section">
-      <div class="sb-title">Chứng chỉ</div>
-      <div class="cert-item">
-        <strong>🏆 TOEIC 635</strong>
-        Toiec Reading &amp; Listening tại IIG
-      </div>
-      <div class="cert-item">
-        <strong>🏆 Revit BIM 3D – Structure</strong>
-        Chứng chỉ tại REACTEC
-      </div>
-    </div>
+<div class="glowing-divider"></div>
 
-    <!-- Languages -->
-    <div class="sb-section">
-      <div class="sb-title">Ngoại ngữ</div>
-      <div class="lang-row">
-        <span class="lang-label">Tiếng Anh (TOEIC 635)</span>
-        <div class="lang-dots">
-          <div class="dot filled"></div>
-          <div class="dot filled"></div>
-          <div class="dot filled"></div>
-          <div class="dot filled"></div>
-          <div class="dot"></div>
-        </div>
+<!-- ═══════ ABOUT / STATS ═══════ -->
+<section id="about">
+  <div class="section-inner">
+    <div class="sec-label">Tổng quan</div>
+    <div class="sec-title">Chỉ số <span>nổi bật</span></div>
+
+    <div class="stats-grid">
+      <div class="stat-card reveal">
+        <div class="stat-num" data-target="2">0</div>
+        <div class="stat-label">Năm kinh nghiệm BIM</div>
       </div>
-      <div class="lang-row">
-        <span class="lang-label">Tiếng Việt (Bản ngữ)</span>
-        <div class="lang-dots">
-          <div class="dot filled"></div>
-          <div class="dot filled"></div>
-          <div class="dot filled"></div>
-          <div class="dot filled"></div>
-          <div class="dot filled"></div>
-        </div>
+      <div class="stat-card reveal" style="transition-delay:0.1s">
+        <div class="stat-num" data-target="7">0</div>
+        <div class="stat-label">Dự án đã thực hiện</div>
+      </div>
+      <div class="stat-card reveal" style="transition-delay:0.2s">
+        <div class="stat-num">7.28</div>
+        <div class="stat-label">GPA Đại học</div>
+      </div>
+      <div class="stat-card reveal" style="transition-delay:0.3s">
+        <div class="stat-num">635</div>
+        <div class="stat-label">Điểm TOEIC</div>
       </div>
     </div>
+  </div>
+</section>
 
-  </aside>
+<div class="glowing-divider"></div>
 
-  <!-- ══ MAIN ══ -->
-  <main class="main">
+<!-- ═══════ EDUCATION ═══════ -->
+<section id="education">
+  <div class="section-inner">
+    <div class="sec-label">Học vấn</div>
+    <div class="sec-title">Nền tảng <span>kiến thức</span></div>
 
-    <!-- EDUCATION -->
-    <section>
-      <div class="section-head">
-        <div class="section-icon">🎓</div>
-        <div class="section-title-text">Học Vấn</div>
-        <div class="section-line"></div>
-      </div>
-      <div class="edu-card">
-        <div class="edu-school">TRƯỜNG ĐẠI HỌC BÁCH KHOA – ĐẠI HỌC QUỐC GIA TP.HCM</div>
+    <div class="edu-card reveal">
+      <div class="edu-icon-box">🎓</div>
+      <div>
+        <div class="edu-school">TRƯỜNG ĐẠI HỌC BÁCH KHOA<br/>ĐẠI HỌC QUỐC GIA TP.HCM</div>
         <div class="edu-major">Chuyên ngành: Xây dựng dân dụng và công nghiệp</div>
-        <div class="edu-row">
-          <div class="edu-badge">📅 08/2019 – 04/2024</div>
-          <div class="edu-badge gpa-badge">⭐ GPA: 7.28/10</div>
-          <div class="edu-badge">🏛️ Bách Khoa HCM</div>
+        <div class="edu-badges">
+          <div class="badge badge-blue">📅 08/2019 – 04/2024</div>
+          <div class="badge badge-gold">⭐ GPA: 7.28 / 10</div>
+          <div class="badge badge-purple">🏛️ Bách Khoa HCM</div>
+          <div class="badge badge-blue">🏗️ Xây dựng dân dụng & CN</div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- EXPERIENCE -->
-    <section>
-      <div class="section-head">
-        <div class="section-icon">💼</div>
-        <div class="section-title-text">Kinh Nghiệm</div>
-        <div class="section-line"></div>
-      </div>
+<div class="glowing-divider"></div>
 
-      <div class="timeline">
+<!-- ═══════ EXPERIENCE ═══════ -->
+<section id="experience">
+  <div class="section-inner">
+    <div class="sec-label">Kinh nghiệm</div>
+    <div class="sec-title">Hành trình <span>sự nghiệp</span></div>
 
-        <!-- Job 1 -->
-        <div class="timeline-item">
-          <div class="tl-header">
+    <div class="timeline">
+
+      <!-- Job 1 -->
+      <div class="tl-item reveal-l">
+        <div class="tl-node-col">
+          <div class="tl-node">🏢</div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-top">
             <div class="tl-company">CÔNG TY CỔ PHẦN ĐỔI MỚI QUẢN LÝ CÔNG NGHỆ XÂY DỰNG – BIMTech JSC.</div>
-            <div class="tl-date">05/2023 – 06/2024</div>
+            <div class="tl-date-pill">05/2023 – 06/2024</div>
           </div>
-          <div class="tl-role">BIM Modeller – Sycamore CapitaLand</div>
-          <ul class="project-list">
-            <li>
-              <strong>Khu đô thị Sycamore CapitaLand:</strong> Triển khai bản vẽ thi công kết cấu và hoàn thiện cho phần cảnh quan.
-              <span class="tag">Revit</span>
-            </li>
-            <li>
-              <strong>Chung cư Linh Dam:</strong> Dựng mô hình BIM để bóc tách khối lượng và dự toán chi phí.
-              <span class="tag">Revit</span>
-            </li>
-            <li>
-              <strong>Mở rộng đường sắt Byford:</strong> Triển khai bản vẽ thi công cho cấu kiện bê tông đổ tại chỗ (Beam stitch pour) để kết nối giữa hai hầu kiên đam lắp ghép trên tuyến đường sắt và kiểm tra xung đột.
-              <span class="tag">Navisworks</span>
-            </li>
-            <li>
-              <strong>Nhà máy sản xuất gỗ Bình Định:</strong> Phát triển biện pháp thi công từ MS Project, dựng mô hình BIM và triển khai bản vẽ biện pháp thi công.
-              <span class="tag">Revit</span> <span class="tag">MS Project</span>
-            </li>
-            <li>
-              <strong>Nhà máy sản xuất gạo Lộc Trời:</strong> Dựng mô hình BIM và sản xuất video 4D quảng bá.
-              <span class="tag">Revit</span> <span class="tag">Unreal Engine</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Job 2 -->
-        <div class="timeline-item">
-          <div class="tl-header">
-            <div class="tl-company">PHÒNG MÔ PHỎNG THÔNG TIN CÔNG TRÌNH – TRƯỜNG ĐẠI HỌC BÁCH KHOA – ĐẠI HỌC QUỐC GIA TP.HCM – BIMLab</div>
-            <div class="tl-date">08/2022 – 08/2022</div>
+          <div class="tl-role">⚡ BIM Modeller – Sycamore CapitaLand</div>
+          <div class="project-cards">
+            <div class="proj-card">
+              <div class="proj-bullet"></div>
+              <div><strong>Khu đô thị Sycamore CapitaLand:</strong> Triển khai bản vẽ thi công kết cấu và hoàn thiện cho phần cảnh quan.<span class="tech-tag">Revit</span></div>
+            </div>
+            <div class="proj-card">
+              <div class="proj-bullet"></div>
+              <div><strong>Chung cư Linh Dam:</strong> Dựng mô hình BIM để bóc tách khối lượng và dự toán chi phí.<span class="tech-tag">Revit</span></div>
+            </div>
+            <div class="proj-card">
+              <div class="proj-bullet"></div>
+              <div><strong>Mở rộng đường sắt Byford:</strong> Triển khai bản vẽ thi công cho cấu kiện bê tông đổ tại chỗ (Beam stitch pour), kết nối hai hầu kiên đam và kiểm tra xung đột.<span class="tech-tag">Navisworks</span></div>
+            </div>
+            <div class="proj-card">
+              <div class="proj-bullet"></div>
+              <div><strong>Nhà máy sản xuất gỗ Bình Định:</strong> Phát triển biện pháp thi công từ MS Project, dựng mô hình BIM và triển khai bản vẽ biện pháp thi công.<span class="tech-tag">Revit</span><span class="tech-tag">MS Project</span></div>
+            </div>
+            <div class="proj-card">
+              <div class="proj-bullet"></div>
+              <div><strong>Nhà máy sản xuất gạo Lộc Trời:</strong> Dựng mô hình BIM và sản xuất video 4D quảng bá dự án.<span class="tech-tag">Revit</span><span class="tech-tag">Unreal Engine</span></div>
+            </div>
           </div>
-          <div class="tl-role">Thực tập sinh – BIM Modeller <span style="font-size:0.75rem;color:#999;">(08/2022 – 05/2022)</span></div>
-          <ul class="project-list">
-            <li>
-              <strong>Chung cư The Grand Manhattan:</strong> Triển khai bản vẽ thi công hoàn thiện như xây tô, ốp lát, cán nền, sơn ngoài.
-              <span class="tag">Revit</span>
-            </li>
-            <li>
-              <strong>Biệt thự Chateaeudkhanh:</strong> Triển khai bản vẽ thi công kết cấu và triển khai bản vẽ biện pháp thi công.
-              <span class="tag">AutoCAD</span> <span class="tag">Katapro</span>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- SKILLS (main area) -->
-    <section>
-      <div class="section-head">
-        <div class="section-icon">⚙️</div>
-        <div class="section-title-text">Kỹ Năng Chuyên Môn</div>
-        <div class="section-line"></div>
-      </div>
-      <div class="skill-grid">
-        <div class="skill-card">
-          <div class="skill-card-title">🔧 Phần mềm triển khai</div>
-          <span class="skill-tag"><span class="dot-level" style="background:#22c55e"></span>Revit 9/10</span>
-          <span class="skill-tag"><span class="dot-level" style="background:#f59e0b"></span>AutoCAD 7/10</span>
-          <span class="skill-tag"><span class="dot-level" style="background:#f59e0b"></span>Navisworks 7.5/10</span>
-          <span class="skill-tag"><span class="dot-level" style="background:#60a5fa"></span>MS Project 6.5/10</span>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card-title">📐 Phần mềm thiết kế</div>
-          <span class="skill-tag"><span class="dot-level" style="background:#f59e0b"></span>RSAP 7/10</span>
-          <span class="skill-tag"><span class="dot-level" style="background:#f59e0b"></span>Etab 7/10</span>
-          <span class="skill-tag"><span class="dot-level" style="background:#60a5fa"></span>Unreal Engine 6/10</span>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card-title">🏗️ Chuyên môn BIM</div>
-          <span class="skill-tag">BIM Modeling</span>
-          <span class="skill-tag">Clash Detection</span>
-          <span class="skill-tag">Quantity Takeoff</span>
-          <span class="skill-tag">4D Simulation</span>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card-title">📋 Kỹ năng xây dựng</div>
-          <span class="skill-tag">Bản vẽ thi công</span>
-          <span class="skill-tag">Kết cấu BTCT</span>
-          <span class="skill-tag">Biện pháp thi công</span>
-          <span class="skill-tag">Bóc tách KL</span>
         </div>
       </div>
-    </section>
 
-    <!-- REFERENCE -->
-    <section>
-      <div class="section-head">
-        <div class="section-icon">📌</div>
-        <div class="section-title-text">Tham Khảo</div>
-        <div class="section-line"></div>
+      <!-- Job 2 -->
+      <div class="tl-item reveal-r">
+        <div class="tl-node-col">
+          <div class="tl-node">🎓</div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-top">
+            <div class="tl-company">PHÒNG MÔ PHỎNG THÔNG TIN CÔNG TRÌNH – ĐẠI HỌC BÁCH KHOA ĐẠI HỌC QUỐC GIA TP.HCM – BIMLab</div>
+            <div class="tl-date-pill">08/2022 – 05/2022</div>
+          </div>
+          <div class="tl-role">⚡ Thực tập sinh – BIM Modeller</div>
+          <div class="project-cards">
+            <div class="proj-card">
+              <div class="proj-bullet"></div>
+              <div><strong>Chung cư The Grand Manhattan:</strong> Triển khai bản vẽ thi công hoàn thiện: xây tô, ốp lát, cán nền, sơn ngoài.<span class="tech-tag">Revit</span></div>
+            </div>
+            <div class="proj-card">
+              <div class="proj-bullet"></div>
+              <div><strong>Biệt thự Chateaeudkhanh:</strong> Triển khai bản vẽ thi công kết cấu và bản vẽ biện pháp thi công.<span class="tech-tag">AutoCAD</span><span class="tech-tag">Katapro</span></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="ref-box">
-        "Thông tin tham chiếu sẽ được cung cấp khi có yêu cầu."<br/>
-        <span style="font-size:0.75rem;margin-top:4px;display:block;color:rgba(255,255,255,0.4);">References available upon request.</span>
+
+    </div>
+  </div>
+</section>
+
+<div class="glowing-divider"></div>
+
+<!-- ═══════ SKILLS ═══════ -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="sec-label">Kỹ năng</div>
+    <div class="sec-title">Bộ công cụ <span>chuyên môn</span></div>
+
+    <div class="skills-layout reveal">
+
+      <!-- Left: Technical bars -->
+      <div>
+        <div class="skill-section-title">🔧 Kỹ năng triển khai</div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-top"><span>Revit</span><span class="skill-bar-pct">90%</span></div>
+          <div class="skill-track"><div class="skill-fill sf-cyan" data-width="90"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-top"><span>Navisworks</span><span class="skill-bar-pct">75%</span></div>
+          <div class="skill-track"><div class="skill-fill sf-cyan" data-width="75"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-top"><span>AutoCAD</span><span class="skill-bar-pct">70%</span></div>
+          <div class="skill-track"><div class="skill-fill sf-cyan" data-width="70"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-top"><span>MS Project</span><span class="skill-bar-pct">65%</span></div>
+          <div class="skill-track"><div class="skill-fill sf-cyan" data-width="65"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-top"><span>Unreal Engine</span><span class="skill-bar-pct">60%</span></div>
+          <div class="skill-track"><div class="skill-fill sf-purple" data-width="60"></div></div>
+        </div>
+
+        <div class="skill-section-title" style="margin-top:28px;">📐 Kỹ năng thiết kế</div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-top"><span>RSAP</span><span class="skill-bar-pct">70%</span></div>
+          <div class="skill-track"><div class="skill-fill sf-gold" data-width="70"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-top"><span>Etab</span><span class="skill-bar-pct">70%</span></div>
+          <div class="skill-track"><div class="skill-fill sf-gold" data-width="70"></div></div>
+        </div>
       </div>
-    </section>
 
-  </main>
-</div>
+      <!-- Right: Soft + Tools -->
+      <div>
+        <div class="skill-section-title">🧠 Kỹ năng mềm</div>
+        <div class="soft-grid">
+          <div class="soft-item"><span class="soft-icon">💪</span>Chịu trách nhiệm và nỗ lực trong công việc</div>
+          <div class="soft-item"><span class="soft-icon">📚</span>Học hỏi và tiếp thu nhanh kiến thức mới</div>
+          <div class="soft-item"><span class="soft-icon">🤝</span>Làm việc nhóm hiệu quả và làm việc độc lập</div>
+          <div class="soft-item"><span class="soft-icon">👑</span>Đảm nhận vai trò trưởng nhóm trong nhóm</div>
+        </div>
 
+        <div class="skill-section-title" style="margin-top:28px;">⚡ Công cụ & Công nghệ</div>
+        <div class="tools-cloud">
+          <div class="tool-pill tp-cyan">🏗️ BIM Modeling <div class="tp-score">Expert</div></div>
+          <div class="tool-pill tp-cyan">🔍 Clash Detection <div class="tp-score">Pro</div></div>
+          <div class="tool-pill tp-cyan">📊 Quantity Takeoff <div class="tp-score">Pro</div></div>
+          <div class="tool-pill tp-gold">🎬 4D Simulation <div class="tp-score">Mid</div></div>
+          <div class="tool-pill tp-gold">📋 Bản vẽ thi công <div class="tp-score">Expert</div></div>
+          <div class="tool-pill tp-purple">🔩 Kết cấu BTCT <div class="tp-score">Pro</div></div>
+          <div class="tool-pill tp-purple">🗺️ Biện pháp thi công <div class="tp-score">Pro</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Certs -->
+    <div style="margin-top:50px;">
+      <div class="sec-label">Chứng chỉ</div>
+      <div class="sec-title" style="margin-bottom:24px;">Bằng cấp &amp; <span>Chứng nhận</span></div>
+      <div class="certs-grid reveal">
+        <div class="cert-card c1">
+          <div class="cert-icon">🌐</div>
+          <div class="cert-name">TOEIC Reading &amp; Listening</div>
+          <div class="cert-org">Trung tâm IIG Việt Nam</div>
+          <div class="cert-score">635 Points</div>
+        </div>
+        <div class="cert-card c2">
+          <div class="cert-icon">🏆</div>
+          <div class="cert-name">Revit BIM 3D – Structure</div>
+          <div class="cert-org">REACTEC Training Center</div>
+          <div class="cert-score">Certified</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="glowing-divider"></div>
+
+<!-- ═══════ CONTACT ═══════ -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="sec-label">Liên hệ</div>
+    <div class="sec-title">Kết nối <span>với tôi</span></div>
+
+    <div class="contact-grid reveal">
+      <div class="contact-card">
+        <div class="cc-icon ci1">📧</div>
+        <div><div class="cc-label">Email</div><div class="cc-value">ntrhieu.hg@gmail.com</div></div>
+      </div>
+      <div class="contact-card">
+        <div class="cc-icon ci2">📞</div>
+        <div><div class="cc-label">Điện thoại</div><div class="cc-value">0787 820 981</div></div>
+      </div>
+      <div class="contact-card">
+        <div class="cc-icon ci3">📍</div>
+        <div><div class="cc-label">Địa chỉ</div><div class="cc-value">Tân Bình, Phụng Hiệp, Hậu Giang</div></div>
+      </div>
+      <div class="contact-card">
+        <div class="cc-icon ci4">🎂</div>
+        <div><div class="cc-label">Ngày sinh</div><div class="cc-value">15 tháng 06, 2001</div></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;" class="reveal">
+      <div style="font-size:0.82rem;color:var(--text2);margin-bottom:16px;letter-spacing:1px;">
+        ✦ Sẵn sàng hợp tác và đón nhận thử thách mới ✦
+      </div>
+      <a href="mailto:ntrhieu.hg@gmail.com" class="btn-primary" style="text-decoration:none;display:inline-flex;">
+        ✉️ Gửi email cho tôi
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">NGUYỄN TRUNG HIẾU</div>
+  <div>BIM Engineer · Xây dựng dân dụng &amp; Công nghiệp · TP.HCM</div>
+  <div style="margin-top:6px;color:rgba(139,172,200,0.4);font-size:0.72rem;">
+    Designed with ♥ · 2025
+  </div>
+</footer>
+
+<!-- ═══════ SCRIPTS ═══════ ═══════ -->
 <script>
-  // ── Animate skill bars on load ──
-  function animateBars() {
-    const fills = document.querySelectorAll('.skill-fill');
-    fills.forEach(el => {
-      const w = el.getAttribute('data-width');
-      setTimeout(() => { el.style.width = w + '%'; }, 400);
-    });
-  }
+/* ── CUSTOM CURSOR ── */
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
 
-  // ── Dark mode toggle ──
-  let dark = false;
-  function toggleTheme() {
-    dark = !dark;
-    const page = document.getElementById('cvPage');
-    if (dark) {
-      document.body.style.background = '#111827';
-      page.style.filter = 'brightness(0.88) saturate(0.9)';
-      document.querySelector('.topbar button:last-child').textContent = '☀️ Light Mode';
-    } else {
-      document.body.style.background = '#e8ecf3';
-      page.style.filter = '';
-      document.querySelector('.topbar button:last-child').textContent = '🌙 Dark Mode';
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx-6+'px'; cursor.style.top=my-6+'px';
+});
+function animRing(){
+  rx+=(mx-rx-18)*0.12; ry+=(my-ry-18)*0.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+document.querySelectorAll('a,button,.stat-card,.cert-card,.contact-card,.tool-pill').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.classList.add('active');ring.classList.add('active');});
+  el.addEventListener('mouseleave',()=>{cursor.classList.remove('active');ring.classList.remove('active');});
+});
+
+/* ── CANVAS UNIVERSE ── */
+(function(){
+  const canvas=document.getElementById('universe');
+  const ctx=canvas.getContext('2d');
+  let W,H,stars=[],nebulas=[],meteors=[];
+
+  function resize(){
+    W=canvas.width=window.innerWidth;
+    H=canvas.height=window.innerHeight;
+  }
+  window.addEventListener('resize',()=>{resize();initStars();});
+  resize();
+
+  function rand(a,b){return Math.random()*(b-a)+a;}
+
+  /* Stars */
+  function initStars(){
+    stars=[];
+    const N=Math.floor(W*H/3000);
+    for(let i=0;i<N;i++){
+      const sz=Math.random();
+      stars.push({
+        x:rand(0,W),y:rand(0,H),
+        r: sz<0.5?0.4 : sz<0.8?0.8 : 1.3,
+        alpha:rand(0.2,1),
+        speed:rand(0.0003,0.002),
+        phase:rand(0,Math.PI*2),
+        color: Math.random()<0.05 ? '#f0c040' : Math.random()<0.08 ? '#a78bfa' : '#c8e8ff'
+      });
+    }
+    nebulas=[];
+    for(let i=0;i<5;i++){
+      nebulas.push({
+        x:rand(0,W),y:rand(0,H),
+        r:rand(120,300),
+        color:['rgba(56,189,248,','rgba(167,139,250,','rgba(30,58,138,'][Math.floor(rand(0,3))],
+        alpha:rand(0.025,0.07)
+      });
     }
   }
+  initStars();
 
-  // ── Intersection Observer for animated bars ──
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) animateBars();
+  /* Meteors */
+  function spawnMeteor(){
+    meteors.push({
+      x:rand(-200,W), y:rand(-100,100),
+      len:rand(80,200), speed:rand(6,12),
+      alpha:1, life:1,
+      angle: Math.PI/6 + rand(-0.2,0.2)
     });
-  }, { threshold: 0.1 });
+  }
+  setInterval(spawnMeteor,2800);
 
-  observer.observe(document.querySelector('.sidebar'));
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
 
-  // Run once on load in case already visible
-  window.addEventListener('load', () => {
-    setTimeout(animateBars, 300);
+    /* Nebulas */
+    nebulas.forEach(n=>{
+      const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);
+      g.addColorStop(0,n.color+n.alpha+')');
+      g.addColorStop(1,n.color+'0)');
+      ctx.fillStyle=g; ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+    });
+
+    /* Stars */
+    stars.forEach(s=>{
+      const a=s.alpha*(0.5+0.5*Math.sin(t*s.speed*1000+s.phase));
+      ctx.globalAlpha=a;
+      ctx.fillStyle=s.color;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fill();
+      /* glow for big stars */
+      if(s.r>1){
+        const g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*4);
+        g.addColorStop(0,'rgba(200,232,255,'+a*0.3+')');
+        g.addColorStop(1,'rgba(200,232,255,0)');
+        ctx.fillStyle=g;
+        ctx.beginPath();ctx.arc(s.x,s.y,s.r*4,0,Math.PI*2);ctx.fill();
+      }
+    });
+    ctx.globalAlpha=1;
+
+    /* Meteors */
+    meteors.forEach((m,i)=>{
+      m.x+=Math.cos(m.angle)*m.speed;
+      m.y+=Math.sin(m.angle)*m.speed;
+      m.life-=0.012;
+      if(m.life<=0){meteors.splice(i,1);return;}
+      const ex=m.x-Math.cos(m.angle)*m.len;
+      const ey=m.y-Math.sin(m.angle)*m.len;
+      const g=ctx.createLinearGradient(ex,ey,m.x,m.y);
+      g.addColorStop(0,'rgba(255,255,255,0)');
+      g.addColorStop(1,'rgba(200,240,255,'+m.life*0.9+')');
+      ctx.strokeStyle=g; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(m.x,m.y); ctx.stroke();
+    });
+
+    /* Floating particles */
+    ctx.globalAlpha=0.15;
+    const px=W/2+Math.cos(t*0.0003)*W*0.3;
+    const py=H/2+Math.sin(t*0.0004)*H*0.2;
+    const gp=ctx.createRadialGradient(px,py,0,px,py,250);
+    gp.addColorStop(0,'rgba(56,189,248,1)');
+    gp.addColorStop(1,'rgba(56,189,248,0)');
+    ctx.fillStyle=gp;
+    ctx.beginPath();ctx.arc(px,py,250,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+
+    t+=16; requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── TYPED TEXT ── */
+(function(){
+  const roles=['BIM Modeller','Kỹ Sư Xây Dựng','Revit Specialist','BIM 3D Expert'];
+  let ri=0,ci=0,del=false;
+  const el=document.getElementById('typed');
+  function tick(){
+    const cur=roles[ri];
+    if(!del){
+      el.textContent=cur.slice(0,++ci);
+      if(ci===cur.length){del=true;setTimeout(tick,1800);return;}
+    } else {
+      el.textContent=cur.slice(0,--ci);
+      if(ci===0){del=false;ri=(ri+1)%roles.length;}
+    }
+    setTimeout(tick,del?60:90);
+  }
+  tick();
+})();
+
+/* ── SCROLL REVEAL ── */
+const revEls=document.querySelectorAll('.reveal,.reveal-l,.reveal-r');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+},{threshold:0.12});
+revEls.forEach(el=>obs.observe(el));
+
+/* ── SKILL BARS ── */
+const skillObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.skill-fill').forEach(f=>{
+        f.style.width=f.getAttribute('data-width')+'%';
+      });
+      skillObs.unobserve(e.target);
+    }
   });
+},{threshold:0.1});
+document.querySelectorAll('.skills-layout').forEach(el=>skillObs.observe(el));
+
+/* ── COUNT UP ── */
+const countObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('[data-target]').forEach(el=>{
+        const target=+el.getAttribute('data-target');
+        let cur=0; const step=target/40;
+        const t=setInterval(()=>{
+          cur=Math.min(cur+step,target);
+          el.textContent=Number.isInteger(target)?Math.round(cur):cur.toFixed(1);
+          if(cur>=target)clearInterval(t);
+        },30);
+      });
+      countObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.2});
+document.querySelectorAll('.stats-grid').forEach(el=>countObs.observe(el));
+
+/* ── NAV ACTIVE ── */
+window.addEventListener('scroll',()=>{
+  const nav=document.querySelector('nav');
+  nav.style.background=window.scrollY>50?'rgba(5,13,31,0.92)':'rgba(5,13,31,0.7)';
+});
 </script>
 </body>
 </html>
